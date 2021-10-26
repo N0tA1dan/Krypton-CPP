@@ -100,9 +100,11 @@ unsigned char *base64_decode(const char *data,
 char * encrypt(char strinp[], char key[]){
     int keylen = strlen(key);
     char cipher_1;
-    char cipher_2[0];
+    // the stupid char is causing me my problems with stack smashing
+    char cipher_2[0x10000];
 
     for(int i = 0; i < strlen(strinp); i++){
+      
         cipher_1 = strinp[i] + keylen;
         cipher_2[i] = cipher_1 ^ key[i];
 
@@ -115,6 +117,7 @@ char * encrypt(char strinp[], char key[]){
     return encoded_data;
 
 }
+
 
 char * decrypt(char strinp[], char key[]){
     int keylen = strlen(key);
@@ -139,6 +142,6 @@ char * decrypt(char strinp[], char key[]){
 
 
 int main(){
-    printf(encrypt("Krypton", "12345"));
-    decrypt("YUVNQUx0OA==", "12345");
+    printf("%s", encrypt("Hello World", "12345"));
+    decrypt("fFhCRUElFBEbHQY", "12345");
 }
